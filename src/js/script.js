@@ -21,6 +21,7 @@ import {
     gsap
 } from "gsap";
 
+import json from './vertex_animation_textures1_data.json'
 async function loadColTex() {
     const load = new THREE.TextureLoader();
     return new Promise((resolve, reject) => {
@@ -49,10 +50,6 @@ async function loadPosTex() {
         load.load(
             `${BASE_DIR}model/vertex_animation_textures1_pos.png`,
             function (texture) {
-                // memorial.exr is NPOT
-                //console.log( textureData );
-                //console.log( texture );
-                // EXRLoader sets these default settings
                 texture.generateMipmaps = false;
                 texture.minFilter = THREE.LinearFilter;
                 texture.magFilter = THREE.LinearFilter;
@@ -71,10 +68,6 @@ async function loadNormalTex() {
         load.load(
             `${BASE_DIR}model/vertex_animation_textures1_norm.png`,
             function (texture) {
-                // memorial.exr is NPOT
-                //console.log( textureData );
-                //console.log( texture );
-                // EXRLoader sets these default settings
                 texture.generateMipmaps = false;
                 texture.minFilter = THREE.LinearFilter;
                 texture.magFilter = THREE.LinearFilter;
@@ -96,31 +89,18 @@ async function loadGLTF() {
     });
 }
 
-async function loadFBX() {
-    const load = new FBXLoader();
-    return new Promise((resolve, reject) => {
-        load.load(
-            `${BASE_DIR}model/vertex_animation_textures1_mesh.fbx`,
-            function (object) {
-                resolve(object);
-            }
-        );
-    });
-}
+
 
 async function init() {
     gsap.ticker.fps(24);
-    let helper;
     let fps = 0;
+    const jsonData = json[0]
     const colTexData = await loadColTex();
     const posTexData = await loadPosTex();
-    const normalTexData = await loadNormalTex();
     const gltfData = await loadGLTF();
-    // const fbxData = await loadFBX();
     const canvas = document.querySelector(".canvas");
     const border = document.querySelector(".border");
 
-    // console.log(fbxData);
 
     const w = window.innerWidth;
     const h = window.innerHeight;
@@ -136,16 +116,19 @@ async function init() {
     camera.position.z = 3;
     const scene = new THREE.Scene();
 
-    // const light = new THREE.DirectionalLight(0xffffff);
-    // light.position.set(1, 10, 10);
-    // scene.add(light);
+    const light = new THREE.DirectionalLight(0xffffff);
+    light.position.set(1, 10, 10);
+    scene.add(light);
     renderer.render(scene, camera);
     let mesh;
+    console.log(jsonData);
+
     gltfData.scene.traverse(child => {
         if (child.isMesh) {
             mesh = child;
             console.log(mesh);
             const material = new THREE.ShaderMaterial({
+                wireframe: false,
                 uniforms: {
                     colorMap: {
                         type: "t",
@@ -155,17 +138,21 @@ async function init() {
                         type: "t",
                         value: posTexData.texture
                     },
-                    normalMap: {
-                        type: "t",
-                        value: normalTexData.texture
+                    totalNum: {
+                        type: "f",
+                        value: 7.0
+                    },
+                    totalFrame: {
+                        type: "f",
+                        value: jsonData.numOfFrames
                     },
                     posMax: {
                         type: "f",
-                        value: 100.0 * 0.01
+                        value: jsonData.posMax * 0.01
                     },
                     posMin: {
                         type: "f",
-                        value: -84.8048 * 0.01
+                        value: jsonData.posMin * 0.01
                     },
                     fps: {
                         type: "f",
@@ -187,7 +174,6 @@ async function init() {
     // var box = new THREE.Mesh(geometry, material);
     // helper = new THREE.VertexNormalsHelper(box, 2, 0x00ff00, 1);
 
-    // scene.add(helper);
     scene.add(gltfData.scene);
     // fbxData.scale.set(100, 100, 100)
     // scene.add(fbxData);
@@ -199,12 +185,13 @@ async function init() {
         gsap.ticker.add(animate);
         controls.update();
         fps++;
-        // fps = 1
         border.style.top = fps + 'px';
 
         mesh.material.uniforms.fps.value = fps;
         renderer.render(scene, camera);
-        if (fps == 240) fps = 0
+        console.log(fps, jsonData.numOfFrames);
+
+        if (fps == jsonData.numOfFrames) fps = 0
     }
     animate();
 }

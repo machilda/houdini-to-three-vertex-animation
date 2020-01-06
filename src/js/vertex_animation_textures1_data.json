@@ -1,24 +1,24 @@
 [
     {
         "Name": "Soft", 
-        "doubleTex": 1, 
+        "doubleTex": 0, 
         "height": 0.1, 
         "normData": 1, 
         "numOfFrames": 239, 
-        "packNorm": 1, 
+        "packNorm": 0, 
         "packPscale": 1, 
         "padPowTwo": 0, 
-        "paddedSizeX": 512, 
-        "paddedSizeY": 256, 
+        "paddedSizeX": 0, 
+        "paddedSizeY": 0, 
         "pivMax": 0.0, 
         "pivMin": 0.0, 
-        "posMax": 21.82897, 
-        "posMin": -22.40934, 
+        "posMax": 300.0, 
+        "posMin": -300.0, 
         "scaleMax": 0.0, 
         "scaleMin": 0.0, 
-        "speed": 0.100418410042, 
-        "textureSizeX": 362, 
-        "textureSizeY": 239, 
+        "speed": 0.125523012552, 
+        "textureSizeX": 0, 
+        "textureSizeY": 0, 
         "width": 0.1
     }
 ]

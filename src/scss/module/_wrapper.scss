@@ -5,6 +5,13 @@
 }
 
 
+.center {
+    position: fixed;
+    width: 50%;
+    height: 100%;
+    border: 1px solid #fff;
+}
+
 .images {
     position: fixed;
     display: flex;
@@ -26,21 +33,21 @@
 
 .image1 {
     background: url('/model/vertex_animation_textures1_col.png') no-repeat;
-    background-size: contain;
+    // background-size: cover;
     width: 33vw;
     color: white;
 }
 
 .image2 {
     background: url('/model/vertex_animation_textures1_pos.png') no-repeat;
-    background-size: contain;
+    // background-size: cover;
     width: 33vw;
     color: white;
 }
 
 .image3 {
     background: url('/model/vertex_animation_textures1_norm.png') no-repeat;
-    background-size: contain;
+    background-size: cover;
     width: 33vw;
     color: white;
 }
