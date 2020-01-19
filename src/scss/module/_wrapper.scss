@@ -16,7 +16,7 @@
     position: fixed;
     display: flex;
     width: 100%;
-    height: 239px;
+    height: 120px;
     justify-content: space-around;
     position: relative;
 }
@@ -32,22 +32,15 @@
 }
 
 .image1 {
-    background: url('/model/vertex_animation_textures1_col.png') no-repeat;
-    // background-size: cover;
-    width: 33vw;
+    background: url('/model/cloth/vertex_animation_textures1_col.png') no-repeat;
+    width: 50vw;
     color: white;
+    background-size: 100% 100%;
 }
 
 .image2 {
-    background: url('/model/vertex_animation_textures1_pos.png') no-repeat;
-    // background-size: cover;
-    width: 33vw;
+    background: url('/model/cloth/vertex_animation_textures1_pos.png') no-repeat;
+    width: 50vw;
     color: white;
-}
-
-.image3 {
-    background: url('/model/vertex_animation_textures1_norm.png') no-repeat;
-    background-size: cover;
-    width: 33vw;
-    color: white;
+    background-size: 100% 100%;
 }

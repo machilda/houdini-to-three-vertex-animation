@@ -17,7 +17,7 @@ void main() {
     float range = posMax + (posMin * -1.0);
     float pu = frag * _id;
    
-    float test = 1.0;
+    // float test = 1.0;
     // float pv = 1.0 -fract(test/totalFrame);
     float pv = 1.0 -fract(fps/totalFrame);
 
@@ -28,9 +28,5 @@ void main() {
     vec3 tColor = texture2D(colorMap, vec2(pu, pv)).rgb;
     vColor = vec4(tColor, 1.0);
 
-    // vec4 pos = vec4(vec3(testPos.r - 1.5, 0.0 ,0.0), 1.0 );
-    // vColor = pos;
-
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(vec3(testPos.r, testPos.b ,0.0) + position, 1.0 );
-    // gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0 );
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(vec3(testPos.r, testPos.b, testPos.g) + position, 1.0 );
 }

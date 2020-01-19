@@ -7,10 +7,6 @@ import {
 } from "three/examples/jsm/controls/OrbitControls.js";
 
 import {
-    FBXLoader
-} from "three/examples/jsm/loaders/FBXLoader.js";
-
-import {
     GLTFLoader
 } from "three/examples/jsm/loaders/GLTFLoader";
 
@@ -21,34 +17,12 @@ import {
     gsap
 } from "gsap";
 
-import json from './vertex_animation_textures1_data.json'
-async function loadColTex() {
-    const load = new THREE.TextureLoader();
-    return new Promise((resolve, reject) => {
-        load.load(
-            `${BASE_DIR}model/vertex_animation_textures1_col.png`,
-            function (texture, textureData) {
-                // memorial.exr is NPOT
-                //console.log( textureData );
-                //console.log( texture );
-                // THREE.TextureLoader sets these default settings
-                texture.generateMipmaps = false;
-                texture.minFilter = THREE.LinearFilter;
-                texture.magFilter = THREE.LinearFilter;
-                const deta = {
-                    texture
-                };
-                resolve(deta);
-            }
-        );
-    });
-}
 
-async function loadPosTex() {
+async function loadTexture(url) {
     const load = new THREE.TextureLoader();
     return new Promise((resolve, reject) => {
         load.load(
-            `${BASE_DIR}model/vertex_animation_textures1_pos.png`,
+            `${BASE_DIR}model/${url}`,
             function (texture) {
                 texture.generateMipmaps = false;
                 texture.minFilter = THREE.LinearFilter;
@@ -62,42 +36,36 @@ async function loadPosTex() {
     });
 }
 
-async function loadNormalTex() {
-    const load = new THREE.TextureLoader();
+async function loadConfigJson(url) {
     return new Promise((resolve, reject) => {
-        load.load(
-            `${BASE_DIR}model/vertex_animation_textures1_norm.png`,
-            function (texture) {
-                texture.generateMipmaps = false;
-                texture.minFilter = THREE.LinearFilter;
-                texture.magFilter = THREE.LinearFilter;
-                const deta = {
-                    texture
-                };
-                resolve(deta);
-            }
-        );
+        fetch(`${BASE_DIR}model/${url}`)
+            .then(function (response) {
+                resolve(response.json())
+            })
     });
 }
 
-async function loadGLTF() {
+async function loadGLTF(url) {
     const load = new GLTFLoader();
     return new Promise((resolve, reject) => {
-        load.load(`${BASE_DIR}model/output.glb`, function (object) {
+        load.load(`${BASE_DIR}model/${url}`, function (object) {
             resolve(object);
         });
     });
 }
 
-
+const directory = 'cloth';
 
 async function init() {
     gsap.ticker.fps(24);
     let fps = 0;
+    const json = await loadConfigJson(`${directory}/vertex_animation_textures1_data.json`);
     const jsonData = json[0]
-    const colTexData = await loadColTex();
-    const posTexData = await loadPosTex();
-    const gltfData = await loadGLTF();
+
+    const colTexData = await loadTexture(`${directory}/vertex_animation_textures1_col.png`);
+    const posTexData = await loadTexture(`${directory}/vertex_animation_textures1_pos.png`);
+    const gltfData = await loadGLTF(`${directory}/output.glb`);
+
     const canvas = document.querySelector(".canvas");
     const border = document.querySelector(".border");
 
@@ -121,8 +89,6 @@ async function init() {
     scene.add(light);
     renderer.render(scene, camera);
     let mesh;
-    console.log(jsonData);
-
     gltfData.scene.traverse(child => {
         if (child.isMesh) {
             mesh = child;
@@ -138,9 +104,10 @@ async function init() {
                         type: "t",
                         value: posTexData.texture
                     },
+                    //ここは頂点数 -1 の値を入れる
                     totalNum: {
                         type: "f",
-                        value: 7.0
+                        value: 3599.0
                     },
                     totalFrame: {
                         type: "f",
@@ -169,14 +136,7 @@ async function init() {
         }
     });
 
-    // var geometry = new THREE.BoxGeometry(1, 1, 1, 2, 2, 2);
-    // var material = new THREE.MeshLambertMaterial({ color: 0xffffff });
-    // var box = new THREE.Mesh(geometry, material);
-    // helper = new THREE.VertexNormalsHelper(box, 2, 0x00ff00, 1);
-
     scene.add(gltfData.scene);
-    // fbxData.scale.set(100, 100, 100)
-    // scene.add(fbxData);
 
     var controls = new OrbitControls(camera, renderer.domElement);
     controls.update();
@@ -196,11 +156,3 @@ async function init() {
     animate();
 }
 init();
-
-function countArry(count) {
-    let array = [];
-    for (let i = 0; i < count; i++) {
-        array.push(i);
-    }
-    return array;
-}
