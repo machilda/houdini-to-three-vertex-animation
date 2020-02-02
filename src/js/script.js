@@ -9,6 +9,9 @@ import {
 import {
     GLTFLoader
 } from "three/examples/jsm/loaders/GLTFLoader";
+import {
+    EXRLoader
+} from 'three/examples/jsm/loaders/EXRLoader';
 
 import vertex from "./shader/vertex.vs";
 import fragment from "./shader/fragment.fs";
@@ -27,12 +30,27 @@ async function loadTexture(url) {
                 texture.generateMipmaps = false;
                 texture.minFilter = THREE.LinearFilter;
                 texture.magFilter = THREE.LinearFilter;
-                const deta = {
+                const data = {
                     texture
                 };
-                resolve(deta);
+                resolve(data);
             }
         );
+    });
+}
+
+
+async function loadExrTexture(url) {
+    const load = new EXRLoader();
+    console.log(load);
+
+    return new Promise((resolve, reject) => {
+        load.setDataType(THREE.FloatType)
+            .load(url, function (texture) {
+                // exrCubeRenderTarget = pmremGenerator.fromEquirectangular(texture);
+                // exrBackground = exrCubeRenderTarget.texture;
+                resolve(texture);
+            });
     });
 }
 
@@ -62,8 +80,12 @@ async function init() {
     const json = await loadConfigJson(`${directory}/vertex_animation_textures1_data.json`);
     const jsonData = json[0]
 
-    const colTexData = await loadTexture(`${directory}/vertex_animation_textures1_col.png`);
-    const posTexData = await loadTexture(`${directory}/vertex_animation_textures1_pos.png`);
+    // const colTexData = await loadTexture(`${directory}/vertex_animation_textures1_col.png`);
+    // const posTexData = await loadTexture(`${directory}/vertex_animation_textures1_pos.png`);
+
+    const testColTexData = await loadExrTexture(`model/${directory}/vertex_animation_textures1_col.exr`);
+    const testPosTexData = await loadExrTexture(`model/${directory}/vertex_animation_textures1_pos.exr`);
+
     const gltfData = await loadGLTF(`${directory}/output.glb`);
 
     const canvas = document.querySelector(".canvas");
@@ -98,16 +120,16 @@ async function init() {
                 uniforms: {
                     colorMap: {
                         type: "t",
-                        value: colTexData.texture
+                        value: testColTexData
                     },
                     posMap: {
                         type: "t",
-                        value: posTexData.texture
+                        value: testPosTexData
                     },
                     //ここは頂点数 -1 の値を入れる
                     totalNum: {
                         type: "f",
-                        value: 3599.0
+                        value: 1019.0
                     },
                     totalFrame: {
                         type: "f",
@@ -149,8 +171,6 @@ async function init() {
 
         mesh.material.uniforms.fps.value = fps;
         renderer.render(scene, camera);
-        console.log(fps, jsonData.numOfFrames);
-
         if (fps == jsonData.numOfFrames) fps = 0
     }
     animate();
