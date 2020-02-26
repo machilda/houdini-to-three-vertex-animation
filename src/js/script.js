@@ -1,19 +1,29 @@
-import { BASE_DIR } from "../constants.yml";
+import {
+    BASE_DIR
+} from "../constants.yml";
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import {
+    OrbitControls
+} from "three/examples/jsm/controls/OrbitControls.js";
 
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader";
+import {
+    GLTFLoader
+} from "three/examples/jsm/loaders/GLTFLoader";
+import {
+    EXRLoader
+} from "three/examples/jsm/loaders/EXRLoader";
 
 import vertex from "./shader/vertex.vs";
 import fragment from "./shader/fragment.fs";
 
-import { gsap } from "gsap";
+import {
+    gsap
+} from "gsap";
 
 async function loadTexture(url) {
     const load = new THREE.TextureLoader();
     return new Promise((resolve, reject) => {
-        load.load(`${BASE_DIR}model/${url}`, function(texture) {
+        load.load(`${BASE_DIR}model/${url}`, function (texture) {
             texture.generateMipmaps = false;
             texture.minFilter = THREE.LinearFilter;
             texture.magFilter = THREE.LinearFilter;
@@ -30,7 +40,7 @@ async function loadExrTexture(url) {
     console.log(load);
 
     return new Promise((resolve, reject) => {
-        load.setDataType(THREE.FloatType).load(url, function(texture) {
+        load.setDataType(THREE.FloatType).load(url, function (texture) {
             // exrCubeRenderTarget = pmremGenerator.fromEquirectangular(texture);
             // exrBackground = exrCubeRenderTarget.texture;
             resolve(texture);
@@ -40,7 +50,7 @@ async function loadExrTexture(url) {
 
 async function loadConfigJson(url) {
     return new Promise((resolve, reject) => {
-        fetch(`${BASE_DIR}model/${url}`).then(function(response) {
+        fetch(`${BASE_DIR}model/${url}`).then(function (response) {
             resolve(response.json());
         });
     });
@@ -49,7 +59,7 @@ async function loadConfigJson(url) {
 async function loadGLTF(url) {
     const load = new GLTFLoader();
     return new Promise((resolve, reject) => {
-        load.load(`${BASE_DIR}model/${url}`, function(object) {
+        load.load(`${BASE_DIR}model/${url}`, function (object) {
             resolve(object);
         });
     });
@@ -71,8 +81,16 @@ async function init() {
     const testColTexData = await loadExrTexture(
         `model/${directory}/vertex_animation_textures16_col.exr`
     );
+    // const testPosTexData = await loadExrTexture(
+    //     `model/${directory}/vertex_animation_textures16_pos.exr`
+    // );
+
+    // const testPosTexData = await loadExrTexture(
+    //     `model/${directory}/vertex_animation_textures-ball_pos.exr`
+    // );
+
     const testPosTexData = await loadExrTexture(
-        `model/${directory}/vertex_animation_textures16_pos.exr`
+        `model/${directory}/vertex_animation_textures-ball_pos.exr`
     );
 
     const gltfData = await loadGLTF(`${directory}/output.glb`);
